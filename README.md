@@ -1,1 +1,1 @@
-# express_graphql_serverless_v2
+# Graphql for Game-if-ai
