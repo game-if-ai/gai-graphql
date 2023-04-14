@@ -81,7 +81,7 @@ const corsOptions = {
     callback: (err: Error | null, allow?: string) => void
   ) {
     if (!origin) {
-      callback(new Error("no origin provided"), '');
+      callback(null, '');
     } else {
       let allowOrigin = false;
       for (const co of CORS_ORIGIN) {

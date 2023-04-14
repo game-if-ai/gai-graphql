@@ -27,7 +27,7 @@ custom:
   stages:
     dev:
       MONGO_URI: ${ssm:/gameifai/graphql/dev/mongo_uri, ''}
-      CORS_ORIGIN: 'https://dev.gameifai.org,https://dev.gameifai.org/'
+      CORS_ORIGIN: 'https://dev.gameifai.org,https://dev.gameifai.org/,https://graphql-dev.gameifai.org,https://graphql-dev.gameifai.org/'
     qa:
       MONGO_URI: ${ssm:/gameifai/graphql/qa/mongo_uri, ''}
       CORS_ORIGIN: 'https://qa.gameifai.org,https://qa.gameifai.org/'

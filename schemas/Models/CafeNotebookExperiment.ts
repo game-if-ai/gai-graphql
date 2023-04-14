@@ -1,20 +1,20 @@
 import * as mongoose from "mongoose";
 import { NotebookExperimentModel, NotebookExperimentSchema } from "./ExperimentBase";
 
-import {GraphQLInt, GraphQLInputObjectType} from 'graphql'
+import {GraphQLFloat, GraphQLInputObjectType} from 'graphql'
 const Schema = mongoose.Schema
 
 export const CafeSummaryInputType = new GraphQLInputObjectType({
     name: 'CafeSummaryInputType',
     fields: () => ({
-        lowAccuracy: {type: GraphQLInt},
-        highAccuracy: {type: GraphQLInt},
-        averageAccuracy: {type: GraphQLInt},
-        averagePrecision: {type: GraphQLInt},
-        averageRecall: {type: GraphQLInt},
-        averageF1Score: {type: GraphQLInt},
-        lowF1Score: {type: GraphQLInt},
-        highF1Score: {type: GraphQLInt},
+        lowAccuracy: {type: GraphQLFloat},
+        highAccuracy: {type: GraphQLFloat},
+        averageAccuracy: {type: GraphQLFloat},
+        averagePrecision: {type: GraphQLFloat},
+        averageRecall: {type: GraphQLFloat},
+        averageF1Score: {type: GraphQLFloat},
+        lowF1Score: {type: GraphQLFloat},
+        highF1Score: {type: GraphQLFloat},
     })
 })
 
