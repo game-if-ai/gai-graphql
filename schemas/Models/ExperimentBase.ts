@@ -50,7 +50,7 @@ export const NotebookExperimentSchema = new Schema({
     activityId: {type: String},
     notebookStateStringified: {type: String},
     displayedHints: {type: [DisplayedHintsSchema]},
-});
+},{timestamps: true});
 
 export interface NotebookExperimentModel extends Document{
     cmi5LaunchParameters: LaunchParameters;
