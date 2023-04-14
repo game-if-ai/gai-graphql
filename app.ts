@@ -1,12 +1,19 @@
 import express from 'express'
 import { graphqlHTTP } from 'express-graphql';
 import bodyParser from 'body-parser'
+import cors from 'cors';
 import publicSchema from './schemas/publicSchema'
 require('dotenv').config()
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+
+const CORS_ORIGIN = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',')
+  : [
+      'https://dev.gameifai.org',
+    ]; 
 
 
 //START MIDDLEWARE
@@ -67,13 +74,38 @@ const verifyQuery = (req, res, next) =>{
   return next();
 }
 
-app.use('/graphql', authorization, graphqlHTTP({
+const corsOptions = {
+  credentials: true,
+  origin: function (
+    origin: string | undefined,
+    callback: (err: Error | null, allow?: string) => void
+  ) {
+    if (!origin) {
+      callback(new Error("no origin provided"), '');
+    } else {
+      let allowOrigin = false;
+      for (const co of CORS_ORIGIN) {
+        if (origin === co || origin.endsWith(co)) {
+          allowOrigin = true;
+          break;
+        }
+      }
+      if (allowOrigin) {
+        callback(null, origin);
+      } else {
+        callback(new Error(`${origin} not allowed by CORS`));
+      }
+    }
+  },
+};
+app.use(cors(corsOptions));
+app.use('/graphqlPrivate', authorization, graphqlHTTP({
     schema: privateSchema, // private due to authorization
     graphiql: true
 }));
 
-app.use('/graphqlClient', graphqlHTTP((req,res)=>{
-  res.setHeader('Access-Control-Allow-Origin', '*');
+app.use('/graphql', graphqlHTTP((req,res)=>{
+  // res.setHeader('Access-Control-Allow-Origin', '*');
   return {
     schema: publicSchema,
     graphiql: true,

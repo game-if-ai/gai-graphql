@@ -1,15 +1,65 @@
 # serverless.yml
 
-service: express-server
-provider:
-  name: aws
-  runtime: nodejs14.x
-  environment:
-    MONGO_URI: ${ssm:/production/mongo_uri, ''}
-    GQL_SECRET: ${ssm:/production/gql_secret, ''}
+service: gai-graphql
 
 plugins:
   - serverless-plugin-typescript
+  - serverless-domain-manager
+
+custom:
+  domain:
+    dev: graphql-dev.gameifai.org
+    qa: graphql-qa.qamentorpal.org
+    prod: graphql.mentorpal.org
+  customDomain:
+    domainName: ${self:custom.domain.${opt:stage, 'dev'}}
+    # basePath: 'graphql' # api root url becomes: api.mentorpal.org/graphql
+    # certificateName: '*.mentorpal.org' didnt work
+    # certificateName: 'c6107db7-c2ef-4e85-a21f-bee7d1ac008a' didnt work either
+    stage: ${self:provider.stage}
+    endpointType: regional
+    apiType: rest
+    createRoute53Record: true
+    securityPolicy: tls_1_2
+    # we might have multiple services, better to manually invoke `sls create_domain`
+    autoDomain: false
+
+  stages:
+    dev:
+      MONGO_URI: ${ssm:/gameifai/graphql/dev/mongo_uri, ''}
+      CORS_ORIGIN: 'https://dev.gameifai.org,https://dev.gameifai.org/'
+    qa:
+      MONGO_URI: ${ssm:/gameifai/graphql/qa/mongo_uri, ''}
+      CORS_ORIGIN: 'https://qa.gameifai.org,https://qa.gameifai.org/'
+    prod:
+      MONGO_URI: ${ssm:/gameifai/graphql/prod/mongo_uri, ''}
+      CORS_ORIGIN: 'https://gameifai.org,https://gameifai.org/'
+
+provider:
+  name: aws
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  runtime: nodejs16.x
+  endpointType: regional
+  tracing:
+    lambda: true
+    apiGateway: true
+  apiGateway:
+    minimumCompressionSize: 1024
+  logs:
+    restApi:
+      # Enables HTTP access logs (default: true)
+      accessLogging: true
+      # # Log format to use for access logs
+      # format: 'requestId: $context.requestId'
+      # Enable execution logging (default: true)
+      executionLogging: true
+      level: INFO  # INFO or ERROR
+      # Log full requests/responses for execution logging (default: true)
+      fullExecutionData: true
+  environment:
+    MONGO_URI: ${self:custom.stages.${self:provider.stage}.MONGO_URI}
+    CORS_ORIGIN: ${self:custom.stages.${self:provider.stage}.CORS_ORIGIN}
 
 functions:
   graphql:
@@ -24,5 +74,14 @@ functions:
         method: ANY
         cors: 
           origins:
-            - 'https://dev.gameifai.org'
-            - 'https://dev.gameifai.org/'
+            - 'https://*.gameifai.org'
+            - 'https://*.gameifai.org/'
+          allowCredentials: true
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+            - X-Amzn-Trace-Id
