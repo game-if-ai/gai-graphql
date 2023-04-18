@@ -17,5 +17,10 @@
     "@types/express": "^4.17.13",
     "serverless-domain-manager": "^7.0.2",
     "serverless-plugin-typescript": "^2.1.2"
+  },
+  "scripts": {
+    "deploy:dev": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s dev --region us-east-1",
+    "deploy:qa": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s qa --region us-east-1",
+    "deploy:prod": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s prod --region us-east-1"
   }
 }

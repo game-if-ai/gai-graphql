@@ -9,13 +9,10 @@ plugins:
 custom:
   domain:
     dev: graphql-dev.gameifai.org
-    qa: graphql-qa.qamentorpal.org
-    prod: graphql.mentorpal.org
+    qa: graphql-qa.gameifai.org
+    prod: graphql.gameifai.org
   customDomain:
     domainName: ${self:custom.domain.${opt:stage, 'dev'}}
-    # basePath: 'graphql' # api root url becomes: api.mentorpal.org/graphql
-    # certificateName: '*.mentorpal.org' didnt work
-    # certificateName: 'c6107db7-c2ef-4e85-a21f-bee7d1ac008a' didnt work either
     stage: ${self:provider.stage}
     endpointType: regional
     apiType: rest
