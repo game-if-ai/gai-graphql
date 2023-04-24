@@ -60,6 +60,7 @@ provider:
 
 functions:
   graphql:
+    timeout: 20
     handler: lambda.handler
     events:
     - http: 
