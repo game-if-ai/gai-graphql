@@ -10,7 +10,7 @@ phases:
       nodejs: 14
     commands:
       - n 18
-      - NODE_ENV=dev cd node && npm ci
+      - NODE_ENV=dev npm ci
 
   build:
     commands:

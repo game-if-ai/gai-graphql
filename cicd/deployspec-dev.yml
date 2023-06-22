@@ -13,6 +13,5 @@ phases:
 
   build:
     commands:
-      - cd node
       - echo Deploying dev stack
       - npm run deploy:dev

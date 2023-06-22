@@ -12,7 +12,5 @@ phases:
       - n 18
 
   build:
-    commands:
-      - cd node
       - echo Deploying prod stack
       - npm run deploy:prod
