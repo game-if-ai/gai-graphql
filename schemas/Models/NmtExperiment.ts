@@ -16,6 +16,7 @@ export const NMTSummaryInputType = new GraphQLInputObjectType({
         callsReshape: {type: GraphQLBoolean},
         callsReshapeOnXAndY: {type: GraphQLBoolean},
         callsArgmax: {type: GraphQLBoolean},
+        callsJoin: {type: GraphQLBoolean},
         hasValidationOutput: {type: GraphQLBoolean},
         dataIsNumpyArray: {type: GraphQLBoolean},
         keywordZeroLookup: {type: GraphQLBoolean},
@@ -34,6 +35,7 @@ export interface NMTSimulationsSummaryModel {
   callsReshape: boolean;
   callsReshapeOnXAndY: boolean;
   callsArgmax: boolean;
+  callsJoin: boolean;
   hasValidationOutput: boolean;
   dataIsNumpyArray: boolean;
   keywordZeroLookup: boolean;
@@ -51,6 +53,7 @@ export const NMTSimulationsSummarySchema = new Schema({
   callsPadSequencesTwiceWithPaddingPost: Boolean,
   callsReshape: Boolean,
   callsReshapeOnXAndY: Boolean,
+  callsJoin: Boolean,
   callsArgmax: Boolean,
   hasValidationOutput: Boolean,
   // Post run

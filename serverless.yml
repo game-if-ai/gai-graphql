@@ -9,8 +9,8 @@ plugins:
 custom:
   domain:
     dev: graphql-dev.gameifai.org
-    qa: graphql-qa.qamentorpal.org
-    prod: graphql.mentorpal.org
+    qa: graphql-qa.gameifai.org
+    prod: graphql.gameifai.org
   customDomain:
     domainName: ${self:custom.domain.${opt:stage, 'dev'}}
     # basePath: 'graphql' # api root url becomes: api.mentorpal.org/graphql
@@ -63,6 +63,7 @@ provider:
 
 functions:
   graphql:
+    timeout: 20
     handler: lambda.handler
     events:
     - http: 
