@@ -13,7 +13,7 @@ custom:
     prod: api.gameifai.org
   customDomain:
     domainName: ${self:custom.domain.${opt:stage, 'dev'}}
-    basePath: 'graphql' # api root url becomes: api.mentorpal.org/graphql
+    basePath: "graphql" # api root url becomes: api.mentorpal.org/graphql
     # certificateName: '*.mentorpal.org' didnt work
     # certificateName: 'c6107db7-c2ef-4e85-a21f-bee7d1ac008a' didnt work either
     stage: ${self:provider.stage}
@@ -28,13 +28,13 @@ custom:
   stages:
     dev:
       MONGO_URI: ${ssm:/gameifai/graphql/dev/mongo_uri, ''}
-      CORS_ORIGIN: 'https://dev.gameifai.org,https://dev.gameifai.org/,https://api-dev.gameifai.org,https://api-dev.gameifai.org/'
+      CORS_ORIGIN: "https://dev.gameifai.org,https://dev.gameifai.org/,https://api-dev.gameifai.org,https://api-dev.gameifai.org/"
     qa:
       MONGO_URI: ${ssm:/gameifai/graphql/qa/mongo_uri, ''}
-      CORS_ORIGIN: 'https://qa.gameifai.org,https://qa.gameifai.org/,https://api-qa.gameifai.org,https://api-qa.gameifai.org/'
+      CORS_ORIGIN: "https://qa.gameifai.org,https://qa.gameifai.org/,https://api-qa.gameifai.org,https://api-qa.gameifai.org/"
     prod:
       MONGO_URI: ${ssm:/gameifai/graphql/prod/mongo_uri, ''}
-      CORS_ORIGIN: 'https://gameifai.org,https://gameifai.org/,https://api.gameifai.org,https://api.gameifai.org/''
+      CORS_ORIGIN: "https://gameifai.org,https://gameifai.org/,https://api.gameifai.org,https://api.gameifai.org/"
 
 provider:
   name: aws
@@ -55,7 +55,7 @@ provider:
       # format: 'requestId: $context.requestId'
       # Enable execution logging (default: true)
       executionLogging: true
-      level: INFO  # INFO or ERROR
+      level: INFO # INFO or ERROR
       # Log full requests/responses for execution logging (default: true)
       fullExecutionData: true
   environment:
@@ -67,23 +67,23 @@ functions:
     timeout: 20
     handler: lambda.handler
     events:
-    - http: 
-        path: /
-        method: GET
-        cors: true
-    - http: 
-        path: /{proxy+}
-        method: ANY
-        cors: 
-          origins:
-            - 'https://*.gameifai.org'
-            - 'https://*.gameifai.org/'
-          allowCredentials: true
-          headers:
-            - Content-Type
-            - X-Amz-Date
-            - Authorization
-            - X-Api-Key
-            - X-Amz-Security-Token
-            - X-Amz-User-Agent
-            - X-Amzn-Trace-Id
+      - http:
+          path: /
+          method: GET
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors:
+            origins:
+              - "https://*.gameifai.org"
+              - "https://*.gameifai.org/"
+            allowCredentials: true
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - X-Amzn-Trace-Id
