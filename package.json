@@ -1,4 +1,23 @@
 {
+ "scripts": {
+    "build": "tsc",
+    "deps:update": "npx ncu -u",
+    "deploy:dev": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s dev --region us-east-1",
+    "deploy:qa": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s qa --region us-east-1",
+    "deploy:prod": "NODE_OPTIONS=--max_old_space_size=4000 sls deploy -s prod --region us-east-1",
+    "format": "prettier --write '**/*.{js,jsx,json,ts,tsx,yml,yaml}'",
+    "lint:fix": "eslint src --ext ts --ext js --fix",
+    "start": "tsc && node dist/server.js",
+    "test": "export ENV=test && export NODE_ENV=test && npx mocha -r tsconfig-paths/register -r ts-node/register -r source-map-support/register './test/**/*.{spec,test}.{js,ts}' --timeout 10000 --full-trace --recursive --reporter spec --delay --exit",
+    "test:all": "npm run test:format && npm run test:lint && npm run test:audit && npm run test:types && npm test",
+    "test:audit": "npm audit --audit-level=moderate --production",
+    "test:format": "prettier --check '**/*.{js,jsx,json,ts,tsx}'",
+    "test:lint": "eslint src --ext ts --ext js --max-warnings=23",
+    "test:types": "tsc --noEmit",
+    "license:deploy": "license-check-and-add remove -f license-config.json && license-check-and-add add -f $LICENSE_CONFIG",
+    "license:fix": "license-check-and-add remove -f license-config.json && license-check-and-add add -f license-config.json",
+    "test:license": "license-check-and-add check -f license-config.json"
+  },	
   "dependencies": {
     "@jupyterlab/nbformat": "^3.6.3",
     "@vendia/serverless-express": "^4.10.1",

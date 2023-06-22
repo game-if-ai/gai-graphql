@@ -8,12 +8,12 @@ plugins:
 
 custom:
   domain:
-    dev: graphql-dev.gameifai.org
-    qa: graphql-qa.gameifai.org
-    prod: graphql.gameifai.org
+    dev: api-dev.gameifai.org
+    qa: api-qa.gameifai.org
+    prod: api.gameifai.org
   customDomain:
     domainName: ${self:custom.domain.${opt:stage, 'dev'}}
-    # basePath: 'graphql' # api root url becomes: api.mentorpal.org/graphql
+    basePath: 'graphql' # api root url becomes: api.mentorpal.org/graphql
     # certificateName: '*.mentorpal.org' didnt work
     # certificateName: 'c6107db7-c2ef-4e85-a21f-bee7d1ac008a' didnt work either
     stage: ${self:provider.stage}
@@ -21,19 +21,20 @@ custom:
     apiType: rest
     createRoute53Record: true
     securityPolicy: tls_1_2
-    # we might have multiple services, better to manually invoke `sls create_domain`
-    autoDomain: false
+    autoDomain: true
+    # Using same domain in multiple services. https://github.com/amplify-education/serverless-domain-manager/issues/484#issuecomment-1028713546
+    preserveExternalPathMappings: true
 
   stages:
     dev:
       MONGO_URI: ${ssm:/gameifai/graphql/dev/mongo_uri, ''}
-      CORS_ORIGIN: 'https://dev.gameifai.org,https://dev.gameifai.org/,https://graphql-dev.gameifai.org,https://graphql-dev.gameifai.org/'
+      CORS_ORIGIN: 'https://dev.gameifai.org,https://dev.gameifai.org/,https://api-dev.gameifai.org,https://api-dev.gameifai.org/'
     qa:
       MONGO_URI: ${ssm:/gameifai/graphql/qa/mongo_uri, ''}
-      CORS_ORIGIN: 'https://qa.gameifai.org,https://qa.gameifai.org/'
+      CORS_ORIGIN: 'https://qa.gameifai.org,https://qa.gameifai.org/,https://api-qa.gameifai.org,https://api-qa.gameifai.org/'
     prod:
       MONGO_URI: ${ssm:/gameifai/graphql/prod/mongo_uri, ''}
-      CORS_ORIGIN: 'https://gameifai.org,https://gameifai.org/'
+      CORS_ORIGIN: 'https://gameifai.org,https://gameifai.org/,https://api.gameifai.org,https://api.gameifai.org/''
 
 provider:
   name: aws
