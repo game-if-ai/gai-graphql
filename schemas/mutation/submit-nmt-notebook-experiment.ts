@@ -7,7 +7,8 @@ import NMTNotebookExperimentEntry, {
   NMTSummaryInputType,
 } from "../Models/NmtExperiment";
 
-require("dotenv").config();
+import * as dotenv from "dotenv";
+dotenv.config();
 
 export const submitNmtNotebookExperiment = {
   type: GraphQLBoolean,
@@ -18,8 +19,8 @@ export const submitNmtNotebookExperiment = {
     summary: { type: NMTSummaryInputType },
     displayedHints: { type: GraphQLList(DisplayedHintsInputType) },
   },
-  // @ts-ignore
-  async resolve(parent, args) {
+
+  async resolve(parent: any, args: any) {
     try {
       await NMTNotebookExperimentEntry.create({ ...args });
       return true;

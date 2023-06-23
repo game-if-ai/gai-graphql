@@ -6,7 +6,8 @@ import {
 import FruitPickerNotebookExperimentEntry from "../Models/FruitPickerExperiment";
 import { FruitPickerSummaryInputType } from "../Models/FruitPickerExperiment";
 
-require("dotenv").config();
+import * as dotenv from "dotenv";
+dotenv.config();
 
 export const submitFruitPickerNotebookExperiment = {
   type: GraphQLBoolean,
@@ -17,8 +18,8 @@ export const submitFruitPickerNotebookExperiment = {
     summary: { type: FruitPickerSummaryInputType },
     displayedHints: { type: GraphQLList(DisplayedHintsInputType) },
   },
-  // @ts-ignore
-  async resolve(parent, args) {
+
+  async resolve(parent: any, args: any) {
     try {
       await FruitPickerNotebookExperimentEntry.create({ ...args });
       return true;

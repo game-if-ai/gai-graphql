@@ -6,7 +6,8 @@ import {
 import { CafeSummaryInputType } from "../Models/CafeNotebookExperiment";
 import CafeNotebookExperimentEntry from "../Models/CafeNotebookExperiment";
 
-require("dotenv").config();
+import * as dotenv from "dotenv";
+dotenv.config();
 
 export const submitCafeNotebookExperiment = {
   type: GraphQLBoolean,
@@ -17,8 +18,8 @@ export const submitCafeNotebookExperiment = {
     summary: { type: CafeSummaryInputType },
     displayedHints: { type: GraphQLList(DisplayedHintsInputType) },
   },
-  // @ts-ignore
-  async resolve(parent, args) {
+
+  async resolve(parent: any, args: any) {
     try {
       await CafeNotebookExperimentEntry.create({ ...args });
       return true;

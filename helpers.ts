@@ -1,6 +1,7 @@
-const Ajv = require("ajv");
+import Ajv from "ajv";
 const ajv = new Ajv();
-require("dotenv").config();
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const queryPayloadSchema = {
   type: "object",
@@ -16,10 +17,12 @@ const queryPayloadSchema = {
   },
 };
 
+// eslint-disable-next-line   @typescript-eslint/no-explicit-any
 export function verifyQueryPayload(req: any, res: any) {
   validateJson(req, res, queryPayloadSchema);
 }
 
+// eslint-disable-next-line   @typescript-eslint/no-explicit-any
 export function validateJson(req: any, res: any, schema: any) {
   const body = req.body;
   if (!body) {

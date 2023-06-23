@@ -3,7 +3,8 @@ import { graphqlHTTP } from "express-graphql";
 import bodyParser from "body-parser";
 import cors from "cors";
 import publicSchema from "./schemas/publicSchema";
-require("dotenv").config();
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -23,7 +24,7 @@ const mongoUrl = `${
     : process.env.MONGO_URI
 }`;
 
-var connectWithRetry = function () {
+const connectWithRetry = function () {
   console.log(`connecting to uri: ${mongoUrl}`);
   return mongoose.connect(mongoUrl, function (err) {
     if (err) {
@@ -46,8 +47,8 @@ mongoose.connection.once("open", () => {
   console.log("connected to database");
 });
 
-// @ts-ignore
-const authorization = (req, res, next) => {
+// eslint-disable-next-line   @typescript-eslint/no-explicit-any
+const authorization = (req: any, res: any, next: any) => {
   if (process.env.ENV === "dev") {
     return next();
   }
@@ -75,8 +76,8 @@ const authorization = (req, res, next) => {
   return next();
 };
 
-// @ts-ignore
-const verifyQuery = (req, res, next) => {
+// eslint-disable-next-line   @typescript-eslint/no-explicit-any
+const verifyQuery = (req: any, res: any, next: any) => {
   // Make sure the payload is only what it needs to be and not malicious
   verifyQueryPayload(req, res);
   // TODO: Whitelist queries?

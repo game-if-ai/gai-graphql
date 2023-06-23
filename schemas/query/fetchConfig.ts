@@ -2,8 +2,8 @@ import Config, { ConfigModel, ConfigType } from "../Models/Config";
 
 export const fetchConfig = {
   type: ConfigType,
-  // @ts-ignore
-  async resolve(parent, args) {
+
+  async resolve(parent: any, args: any) {
     try {
       const config = await Config.findOne({});
       return config;

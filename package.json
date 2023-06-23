@@ -38,6 +38,7 @@
     "@typescript-eslint/parser": "^5.60.0",
     "eslint": "^8.43.0",
     "eslint-config-prettier": "^8.8.0",
+    "mocha": "^10.2.0",
     "prettier": "^2.8.8",
     "serverless-domain-manager": "^7.0.2",
     "serverless-plugin-typescript": "^2.1.2"
