@@ -4,17 +4,19 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { GraphQLObjectType, GraphQLSchema } from "graphql";
+import dotenv from "dotenv";
 
-// import fetchConfig from './query/fetchConfig'
+function findDotEnvPath(): string[] {
+  return process.env["DOTENV_PATH"]
+    ? process.env["DOTENV_PATH"].split(",")
+    : [".env"];
+}
 
-const PrivateRootQuery = new GraphQLObjectType({
-  name: "PublicRootQueryType",
-  fields: {
-    // fetchConfig
-  },
-});
+export function configureEnv(): void {
+  const dotEnvPath = findDotEnvPath();
+  for (const p of dotEnvPath) {
+    dotenv.config({ path: p });
+  }
+}
 
-export default new GraphQLSchema({
-  query: PrivateRootQuery,
-});
+export default configureEnv;

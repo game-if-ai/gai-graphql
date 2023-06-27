@@ -1,52 +1,63 @@
-import * as mongoose from "mongoose";
-import { NotebookExperimentModel, NotebookExperimentSchema } from "./ExperimentBase";
+/*
+This software is Copyright ©️ 2020 The University of Southern California. All Rights Reserved. 
+Permission to use, copy, modify, and distribute this software and its documentation for educational, research and non-profit purposes, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and subject to the full license file found in the root of this software deliverable. Permission to make commercial use of this software may be obtained by contacting:  USC Stevens Center for Innovation University of Southern California 1150 S. Olive Street, Suite 2300, Los Angeles, CA 90115, USA Email: accounting@stevens.usc.edu
 
-import {GraphQLFloat, GraphQLInputObjectType} from 'graphql'
-const Schema = mongoose.Schema
+The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
+*/
+import * as mongoose from "mongoose";
+import {
+  NotebookExperimentModel,
+  NotebookExperimentSchema,
+} from "./ExperimentBase";
+
+import { GraphQLFloat, GraphQLInputObjectType } from "graphql";
+const Schema = mongoose.Schema;
 
 export const CafeSummaryInputType = new GraphQLInputObjectType({
-    name: 'CafeSummaryInputType',
-    fields: () => ({
-        lowAccuracy: {type: GraphQLFloat},
-        highAccuracy: {type: GraphQLFloat},
-        averageAccuracy: {type: GraphQLFloat},
-        averagePrecision: {type: GraphQLFloat},
-        averageRecall: {type: GraphQLFloat},
-        averageF1Score: {type: GraphQLFloat},
-        lowF1Score: {type: GraphQLFloat},
-        highF1Score: {type: GraphQLFloat},
-    })
-})
+  name: "CafeSummaryInputType",
+  fields: () => ({
+    lowAccuracy: { type: GraphQLFloat },
+    highAccuracy: { type: GraphQLFloat },
+    averageAccuracy: { type: GraphQLFloat },
+    averagePrecision: { type: GraphQLFloat },
+    averageRecall: { type: GraphQLFloat },
+    averageF1Score: { type: GraphQLFloat },
+    lowF1Score: { type: GraphQLFloat },
+    highF1Score: { type: GraphQLFloat },
+  }),
+});
 
 export interface CafeSimulationsSummaryModel {
-    lowAccuracy: number;
-    highAccuracy: number;
-    averageAccuracy: number;
-    averagePrecision: number;
-    averageRecall: number;
-    averageF1Score: number;
-    lowF1Score: number;
-    highF1Score: number;
+  lowAccuracy: number;
+  highAccuracy: number;
+  averageAccuracy: number;
+  averagePrecision: number;
+  averageRecall: number;
+  averageF1Score: number;
+  lowF1Score: number;
+  highF1Score: number;
 }
 
 export const CafeSimulationsSummarySchema = new Schema({
-    lowAccuracy: Number,
-    highAccuracy: Number,
-    averageAccuracy: Number,
-    averagePrecision: Number,
-    averageRecall: Number,
-    averageF1Score: Number,
-    lowF1Score: Number,
-    highF1Score: Number
-})
+  lowAccuracy: Number,
+  highAccuracy: Number,
+  averageAccuracy: Number,
+  averagePrecision: Number,
+  averageRecall: Number,
+  averageF1Score: Number,
+  lowF1Score: Number,
+  highF1Score: Number,
+});
 
-  
-export interface CafeNotebookExperimentModel extends NotebookExperimentModel{
-    summary: CafeSimulationsSummaryModel;
+export interface CafeNotebookExperimentModel extends NotebookExperimentModel {
+  summary: CafeSimulationsSummaryModel;
 }
 
-export const CafeNotebookExperimentSchema = new Schema({ 
-    summary: CafeSimulationsSummarySchema
+export const CafeNotebookExperimentSchema = new Schema({
+  summary: CafeSimulationsSummarySchema,
 }).add(NotebookExperimentSchema);
 
-export default mongoose.model('CafeNotebookExperimentEntry', CafeNotebookExperimentSchema);
+export default mongoose.model(
+  "CafeNotebookExperimentEntry",
+  CafeNotebookExperimentSchema
+);

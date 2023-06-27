@@ -4,17 +4,15 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { GraphQLObjectType, GraphQLSchema } from "graphql";
-
-// import fetchConfig from './query/fetchConfig'
-
-const PrivateRootQuery = new GraphQLObjectType({
-  name: "PublicRootQueryType",
-  fields: {
-    // fetchConfig
-  },
-});
-
-export default new GraphQLSchema({
-  query: PrivateRootQuery,
-});
+/*
+ * return a variable from process.env or throw an Error
+ */
+export default function requireEnv(name: string): string {
+  const val = process.env[name];
+  if (val) {
+    return val;
+  }
+  throw new Error(
+    `required env variable '${name}' is not defined. Make sure .env file exists in root and has ${name} set`
+  );
+}

@@ -4,17 +4,18 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { GraphQLObjectType, GraphQLSchema } from "graphql";
+import winston from "winston";
 
-// import fetchConfig from './query/fetchConfig'
-
-const PrivateRootQuery = new GraphQLObjectType({
-  name: "PublicRootQueryType",
-  fields: {
-    // fetchConfig
-  },
+export const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL_GRAPHQL || "debug",
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(
+      process.env.NODE_ENV?.includes("dev")
+        ? { format: winston.format.simple() }
+        : undefined
+    ),
+  ],
 });
 
-export default new GraphQLSchema({
-  query: PrivateRootQuery,
-});
+export default logger;
