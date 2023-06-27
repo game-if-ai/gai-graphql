@@ -4,14 +4,14 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import winston from 'winston';
+import winston from "winston";
 
 export const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL_GRAPHQL || 'debug',
+  level: process.env.LOG_LEVEL_GRAPHQL || "debug",
   format: winston.format.json(),
   transports: [
     new winston.transports.Console(
-      process.env.NODE_ENV?.includes('dev')
+      process.env.NODE_ENV?.includes("dev")
         ? { format: winston.format.simple() }
         : undefined
     ),
