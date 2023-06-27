@@ -4,14 +4,15 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { expect } from 'chai';
-import { Express } from 'express';
-import jwt from 'jsonwebtoken';
-import path from 'path';
-import request from 'supertest';
+import { expect } from "chai";
+import { Express } from "express";
+import jwt from "jsonwebtoken";
+import path from "path";
+import request from "supertest";
+import requireEnv from "../utils/require-env";
 
 export function fixturePath(p: string): string {
-  return path.join(__dirname, 'fixtures', p);
+  return path.join(__dirname, "fixtures", p);
 }
 
 // duration of access token in seconds before it expires
@@ -28,7 +29,7 @@ export function getToken(userId: string, expiresIn?: number): string {
   const expirationDate = new Date(Date.now() + expiresIn * 1000);
   const accessToken = jwt.sign(
     { id: userId, expirationDate },
-    process.env.JWT_SECRET,
+    requireEnv("JWT_SECRET"),
     { expiresIn: expirationDate.getTime() - new Date().getTime() }
   );
   return accessToken;
@@ -46,12 +47,12 @@ export interface AuthGqlArgs {
   userId?: string;
 }
 
-const USER_ID_DEFAULT = '5f0cfea3395d762ca65405d3';
+const USER_ID_DEFAULT = "5f0cfea3395d762ca65405d3";
 export async function authGql(args: AuthGqlArgs): Promise<request.Response> {
   const token = getToken(args.userId || USER_ID_DEFAULT);
   const response = await request(args.app)
-    .post('/graphql')
-    .set('Authorization', `bearer ${token}`)
+    .post("/graphql")
+    .set("Authorization", `bearer ${token}`)
     .send(args.body);
   if (!args.disableExpect200Response) {
     expect(response.status).to.equal(200);
