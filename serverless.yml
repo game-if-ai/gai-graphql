@@ -27,12 +27,15 @@ custom:
 
   stages:
     dev:
+      WEBACL_ARN: ${ssm:/dev-gameifai/api_firewall_arn, ''}
       MONGO_URI: ${ssm:/gameifai/graphql/dev/mongo_uri, ''}
       CORS_ORIGIN: "https://dev.gameifai.org,https://dev.gameifai.org/,https://api-dev.gameifai.org,https://api-dev.gameifai.org/"
     qa:
+      WEBACL_ARN: ${ssm:/qa-gameifai/api_firewall_arn, ''}
       MONGO_URI: ${ssm:/gameifai/graphql/qa/mongo_uri, ''}
       CORS_ORIGIN: "https://qa.gameifai.org,https://qa.gameifai.org/,https://api-qa.gameifai.org,https://api-qa.gameifai.org/"
     prod:
+      WEBACL_ARN: ${ssm:/prod-gameifai/api_firewall_arn, ''}
       MONGO_URI: ${ssm:/gameifai/graphql/prod/mongo_uri, ''}
       CORS_ORIGIN: "https://gameifai.org,https://gameifai.org/,https://api.gameifai.org,https://api.gameifai.org/"
 
@@ -87,3 +90,21 @@ functions:
               - X-Amz-Security-Token
               - X-Amz-User-Agent
               - X-Amzn-Trace-Id
+resources:
+  Conditions:
+    AttachFirewall:
+      Fn::Or:
+        - Fn::Equals: ['${self:provider.stage}', 'qa']
+        - Fn::Equals: ['${self:provider.stage}', 'prod']
+  Resources:
+    # this fails on first deploy because CloudFormation tries to create
+    # association but the gateway does not yet exist
+    # Workaround: Disable this resource on first deploy, when first deploy is successful, enable this resource and deploy again
+    FirewallAssociation:
+      Type: AWS::WAFv2::WebACLAssociation
+      Condition: AttachFirewall
+      DependsOn: 'ApiGatewayRestApi'
+      Properties:
+        ResourceArn:
+          Fn::Sub: 'arn:aws:apigateway:${AWS::Region}::/restapis/${ApiGatewayRestApi}/stages/${self:provider.stage}'
+        WebACLArn: '${self:custom.stages.${self:provider.stage}.WEBACL_ARN}'
