@@ -8,12 +8,12 @@ plugins:
 
 custom:
   domain:
-    dev: graphql-dev.gameifai.org
-    qa: graphql-qa.qamentorpal.org
-    prod: graphql.mentorpal.org
+    dev: api-dev.gameifai.org
+    qa: api-qa.gameifai.org
+    prod: api.gameifai.org
   customDomain:
     domainName: ${self:custom.domain.${opt:stage, 'dev'}}
-    # basePath: 'graphql' # api root url becomes: api.mentorpal.org/graphql
+    basePath: "graphql" # api root url becomes: api.mentorpal.org/graphql
     # certificateName: '*.mentorpal.org' didnt work
     # certificateName: 'c6107db7-c2ef-4e85-a21f-bee7d1ac008a' didnt work either
     stage: ${self:provider.stage}
@@ -21,19 +21,23 @@ custom:
     apiType: rest
     createRoute53Record: true
     securityPolicy: tls_1_2
-    # we might have multiple services, better to manually invoke `sls create_domain`
-    autoDomain: false
+    autoDomain: true
+    # Using same domain in multiple services. https://github.com/amplify-education/serverless-domain-manager/issues/484#issuecomment-1028713546
+    preserveExternalPathMappings: true
 
   stages:
     dev:
+      WEBACL_ARN: ${ssm:/dev-gameifai/api_firewall_arn, ''}
       MONGO_URI: ${ssm:/gameifai/graphql/dev/mongo_uri, ''}
-      CORS_ORIGIN: 'https://dev.gameifai.org,https://dev.gameifai.org/,https://graphql-dev.gameifai.org,https://graphql-dev.gameifai.org/'
+      CORS_ORIGIN: "https://dev.gameifai.org,https://dev.gameifai.org/,https://api-dev.gameifai.org,https://api-dev.gameifai.org/"
     qa:
+      WEBACL_ARN: ${ssm:/qa-gameifai/api_firewall_arn, ''}
       MONGO_URI: ${ssm:/gameifai/graphql/qa/mongo_uri, ''}
-      CORS_ORIGIN: 'https://qa.gameifai.org,https://qa.gameifai.org/'
+      CORS_ORIGIN: "https://qa.gameifai.org,https://qa.gameifai.org/,https://api-qa.gameifai.org,https://api-qa.gameifai.org/"
     prod:
+      WEBACL_ARN: ${ssm:/prod-gameifai/api_firewall_arn, ''}
       MONGO_URI: ${ssm:/gameifai/graphql/prod/mongo_uri, ''}
-      CORS_ORIGIN: 'https://gameifai.org,https://gameifai.org/'
+      CORS_ORIGIN: "https://gameifai.org,https://gameifai.org/,https://api.gameifai.org,https://api.gameifai.org/"
 
 provider:
   name: aws
@@ -54,7 +58,7 @@ provider:
       # format: 'requestId: $context.requestId'
       # Enable execution logging (default: true)
       executionLogging: true
-      level: INFO  # INFO or ERROR
+      level: INFO # INFO or ERROR
       # Log full requests/responses for execution logging (default: true)
       fullExecutionData: true
   environment:
@@ -63,25 +67,44 @@ provider:
 
 functions:
   graphql:
+    timeout: 20
     handler: lambda.handler
     events:
-    - http: 
-        path: /
-        method: GET
-        cors: true
-    - http: 
-        path: /{proxy+}
-        method: ANY
-        cors: 
-          origins:
-            - 'https://*.gameifai.org'
-            - 'https://*.gameifai.org/'
-          allowCredentials: true
-          headers:
-            - Content-Type
-            - X-Amz-Date
-            - Authorization
-            - X-Api-Key
-            - X-Amz-Security-Token
-            - X-Amz-User-Agent
-            - X-Amzn-Trace-Id
+      - http:
+          path: /
+          method: GET
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors:
+            origins:
+              - "https://*.gameifai.org"
+              - "https://*.gameifai.org/"
+            allowCredentials: true
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - X-Amzn-Trace-Id
+resources:
+  Conditions:
+    AttachFirewall:
+      Fn::Or:
+        - Fn::Equals: ['${self:provider.stage}', 'qa']
+        - Fn::Equals: ['${self:provider.stage}', 'prod']
+  Resources:
+    # this fails on first deploy because CloudFormation tries to create
+    # association but the gateway does not yet exist
+    # Workaround: Disable this resource on first deploy, when first deploy is successful, enable this resource and deploy again
+    FirewallAssociation:
+      Type: AWS::WAFv2::WebACLAssociation
+      Condition: AttachFirewall
+      DependsOn: 'ApiGatewayRestApi'
+      Properties:
+        ResourceArn:
+          Fn::Sub: 'arn:aws:apigateway:${AWS::Region}::/restapis/${ApiGatewayRestApi}/stages/${self:provider.stage}'
+        WebACLArn: '${self:custom.stages.${self:provider.stage}.WEBACL_ARN}'

@@ -4,17 +4,32 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { GraphQLObjectType, GraphQLSchema } from "graphql";
+import dotenv from "dotenv";
+import { appStop } from "../app";
+import { logger } from "../utils/logging";
+import mongoUnit from "mongo-unit";
+import { fixturePath } from "./helpers";
+import { before, after } from "mocha";
 
-// import fetchConfig from './query/fetchConfig'
-
-const PrivateRootQuery = new GraphQLObjectType({
-  name: "PublicRootQueryType",
-  fields: {
-    // fetchConfig
-  },
+before(() => {
+  dotenv.config({ path: fixturePath(".env") });
+  process.env.DOTENV_PATH = fixturePath(".env");
 });
 
-export default new GraphQLSchema({
-  query: PrivateRootQuery,
+after(async () => {
+  try {
+    await appStop();
+  } catch (mongooseDisconnectErr) {
+    logger.error(mongooseDisconnectErr);
+  }
+  try {
+    await mongoUnit.stop();
+  } catch (mongoUnitErr) {
+    logger.error(mongoUnitErr);
+  }
+});
+
+mongoUnit.start().then((url) => {
+  process.env.MONGO_URI = url; // this const process.env.DATABASE_URL = will keep link to fake mongo
+  run(); // this line start mocha tests
 });
