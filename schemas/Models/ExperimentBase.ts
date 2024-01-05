@@ -7,7 +7,6 @@ The full terms of this copyright and license should always be found in the root 
 import mongoose, { Document } from "mongoose";
 const Schema = mongoose.Schema;
 import { LaunchParameters } from "@xapi/cmi5";
-import { INotebookContent } from "@jupyterlab/nbformat";
 import {
   GraphQLInputObjectType,
   GraphQLString,
