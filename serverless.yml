@@ -79,6 +79,8 @@ functions:
           method: ANY
           cors:
             origins:
+              - "https://gameifai.org"
+              - "https://gameifai.org/"
               - "https://*.gameifai.org"
               - "https://*.gameifai.org/"
             allowCredentials: true
