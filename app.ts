@@ -114,7 +114,7 @@ export async function appStop(): Promise<void> {
 export function createApp(): Express {
   const app = express();
   app.use(bodyParser.urlencoded({ extended: true, limit: "5mb" }));
-  app.use(express.json());
+  app.use(express.json({ limit: "5mb"}));
   app.use(cors(corsOptions));
   app.use(
     "/graphqlPrivate",
