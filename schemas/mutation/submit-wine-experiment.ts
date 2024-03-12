@@ -9,26 +9,27 @@ import {
   Cmi5LaunchParametersInputType,
   DisplayedHintsInputType,
 } from "../Models/ExperimentBase";
-import FruitPickerNotebookExperimentEntry from "../Models/FruitPickerExperiment";
-import { FruitPickerSummaryInputType } from "../Models/FruitPickerExperiment";
+import WineExperimentModel, {
+  WineSummaryInputType,
+} from "../Models/WineExperiment";
 
 import * as dotenv from "dotenv";
 dotenv.config();
 
-export const submitFruitPickerNotebookExperiment = {
+export const submitWineExperiment = {
   type: GraphQLBoolean,
   args: {
     cmi5LaunchParameters: { type: Cmi5LaunchParametersInputType },
     activityId: { type: GraphQLString },
     notebookStateStringified: { type: GraphQLString },
-    summary: { type: FruitPickerSummaryInputType },
+    summary: { type: WineSummaryInputType },
     displayedHints: { type: GraphQLList(DisplayedHintsInputType) },
   },
 
   // eslint-disable-next-line   @typescript-eslint/no-explicit-any
   async resolve(parent: any, args: any) {
     try {
-      await FruitPickerNotebookExperimentEntry.create({ ...args });
+      await WineExperimentModel.create({ ...args });
       return true;
     } catch (e) {
       console.log(e);
@@ -36,4 +37,4 @@ export const submitFruitPickerNotebookExperiment = {
     }
   },
 };
-export default submitFruitPickerNotebookExperiment;
+export default submitWineExperiment;
