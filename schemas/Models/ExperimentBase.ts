@@ -10,8 +10,7 @@ import { LaunchParameters } from "@xapi/cmi5";
 import {
   GraphQLInputObjectType,
   GraphQLString,
-  GraphQLList,
-  GraphQLInt,
+  GraphQLObjectType,
 } from "graphql";
 
 const AgentSchema = new Schema({
@@ -29,25 +28,6 @@ const LaunchParametersSchema = new Schema({
   actor: { type: AgentSchema },
   registration: { type: String },
   activityId: { type: String },
-});
-
-const NotebookCellSchema = new Schema({
-  cell_type: String,
-  metadata: Schema.Types.Mixed,
-  source: String,
-  outputs: [Schema.Types.Mixed],
-});
-
-const NotebookMetadataSchema = new Schema({
-  kernelspec: Schema.Types.Mixed,
-  language_info: Schema.Types.Mixed,
-});
-
-const NotebookContentSchema = new Schema({
-  cells: [NotebookCellSchema],
-  metadata: NotebookMetadataSchema,
-  nbformat: Number,
-  nbformat_minor: Number,
 });
 
 const DisplayedHintsSchema = new Schema({
@@ -80,6 +60,14 @@ const AccountInputType = new GraphQLInputObjectType({
   }),
 });
 
+const AccountObjectType = new GraphQLObjectType({
+  name: "AccountObjectType",
+  fields: () => ({
+    homePage: { type: GraphQLString },
+    name: { type: GraphQLString },
+  }),
+});
+
 const ActorInputType = new GraphQLInputObjectType({
   name: "ActorInputType",
   fields: () => ({
@@ -88,6 +76,18 @@ const ActorInputType = new GraphQLInputObjectType({
     mbox: { type: GraphQLString },
     mbox_sha1sum: { type: GraphQLString },
     account: { type: AccountInputType },
+    openid: { type: GraphQLString },
+  }),
+});
+
+export const ActorObjectType = new GraphQLObjectType({
+  name: "ActorObjectType",
+  fields: () => ({
+    objectType: { type: GraphQLString },
+    name: { type: GraphQLString },
+    mbox: { type: GraphQLString },
+    mbox_sha1sum: { type: GraphQLString },
+    account: { type: AccountObjectType },
     openid: { type: GraphQLString },
   }),
 });
@@ -103,36 +103,27 @@ export const Cmi5LaunchParametersInputType = new GraphQLInputObjectType({
   }),
 });
 
-const NotebookCellInputType = new GraphQLInputObjectType({
-  name: "NotebookCellType",
+export const Cmi5LaunchParametersObjectType = new GraphQLObjectType({
+  name: "Cmi5LaunchParametersObjectType",
   fields: () => ({
-    cell_type: { type: GraphQLString },
-    metadata: { type: GraphQLString },
-    source: { type: GraphQLString },
-    outputs: { type: new GraphQLList(GraphQLString) },
-  }),
-});
-
-const NotebookMetadataInputType = new GraphQLInputObjectType({
-  name: "NotebookMetadataInputType",
-  fields: () => ({
-    kernelspec: { type: GraphQLString },
-    language_info: { type: GraphQLString },
-  }),
-});
-
-export const NotebookContentInputType = new GraphQLInputObjectType({
-  name: "NotebookContentInputType",
-  fields: () => ({
-    cells: { type: new GraphQLList(NotebookCellInputType) },
-    metadata: { type: NotebookMetadataInputType },
-    nbformat: { type: GraphQLInt },
-    nbformat_minor: { type: GraphQLInt },
+    endpoint: { type: GraphQLString },
+    fetch: { type: GraphQLString },
+    registration: { type: GraphQLString },
+    activityId: { type: GraphQLString },
+    actor: { type: ActorObjectType },
   }),
 });
 
 export const DisplayedHintsInputType = new GraphQLInputObjectType({
   name: "DisplayedHintsInputType",
+  fields: () => ({
+    message: { type: GraphQLString },
+    conditionDescription: { type: GraphQLString },
+  }),
+});
+
+export const DisplayedHintsObjectType = new GraphQLObjectType({
+  name: "DisplayedHintsObjectType",
   fields: () => ({
     message: { type: GraphQLString },
     conditionDescription: { type: GraphQLString },

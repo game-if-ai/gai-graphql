@@ -4,12 +4,12 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import Config, { ConfigModel, ConfigType } from "../Models/Config";
+import Config, { ConfigType } from "../Models/Config";
 
 export const fetchConfig = {
   type: ConfigType,
 
-  async resolve(parent: any, args: any) {
+  async resolve() {
     try {
       const config = await Config.findOne({});
       return config;

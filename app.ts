@@ -127,7 +127,7 @@ export function createApp(): Express {
 
   app.use(
     "/graphql",
-    graphqlHTTP((req, res) => {
+    graphqlHTTP(() => {
       // res.setHeader('Access-Control-Allow-Origin', '*');
       return {
         schema: publicSchema,

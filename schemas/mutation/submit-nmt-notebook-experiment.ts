@@ -26,6 +26,7 @@ export const submitNmtNotebookExperiment = {
     displayedHints: { type: GraphQLList(DisplayedHintsInputType) },
   },
 
+  // eslint-disable-next-line   @typescript-eslint/no-explicit-any
   async resolve(parent: any, args: any) {
     try {
       await NMTNotebookExperimentEntry.create({ ...args });

@@ -4,36 +4,24 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { GraphQLString, GraphQLList, GraphQLBoolean } from "graphql";
-import {
-  Cmi5LaunchParametersInputType,
-  DisplayedHintsInputType,
-} from "../Models/ExperimentBase";
-import FruitPickerNotebookExperimentEntry from "../Models/FruitPickerExperiment";
-import { FruitPickerSummaryInputType } from "../Models/FruitPickerExperiment";
-
+import WineExperimentModel, {
+  WineExperimentObjectType,
+} from "../Models/WineExperiment";
+import { GraphQLList } from "graphql";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-export const submitFruitPickerNotebookExperiment = {
-  type: GraphQLBoolean,
-  args: {
-    cmi5LaunchParameters: { type: Cmi5LaunchParametersInputType },
-    activityId: { type: GraphQLString },
-    notebookStateStringified: { type: GraphQLString },
-    summary: { type: FruitPickerSummaryInputType },
-    displayedHints: { type: GraphQLList(DisplayedHintsInputType) },
-  },
-
-  // eslint-disable-next-line   @typescript-eslint/no-explicit-any
-  async resolve(parent: any, args: any) {
+export const fetchWineExperiments = {
+  type: GraphQLList(WineExperimentObjectType),
+  args: {},
+  async resolve() {
     try {
-      await FruitPickerNotebookExperimentEntry.create({ ...args });
-      return true;
+      const res = await WineExperimentModel.find({});
+      return res;
     } catch (e) {
       console.log(e);
       throw new Error(String(e));
     }
   },
 };
-export default submitFruitPickerNotebookExperiment;
+export default fetchWineExperiments;
