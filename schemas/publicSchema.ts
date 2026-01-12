@@ -13,6 +13,7 @@ import submitNmtNotebookExperiment from "./mutation/submit-nmt-notebook-experime
 import submitFruitPickerNotebookExperiment from "./mutation/submit-fruit-picker-notebook-experiment";
 import submitPlaneNotebookExperiment from "./mutation/submit-plane-notebook-experiment";
 import submitWineExperiment from "./mutation/submit-wine-experiment";
+import submitNnTfNotebookExperiment from "./mutation/submit-nn-tf-notebook-experiment";
 import fetchWineExperiments from "./query/fetch-wine-experiments";
 
 const PublicRootQuery = new GraphQLObjectType({
@@ -31,6 +32,7 @@ const PublicMutation = new GraphQLObjectType({
     submitFruitPickerNotebookExperiment,
     submitPlaneNotebookExperiment,
     submitWineExperiment,
+    submitNnTfNotebookExperiment,
   },
 });
 
